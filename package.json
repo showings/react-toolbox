@@ -145,7 +145,7 @@
       "^.+\\.(ts|tsx)$": "<rootDir>/transformers/typescript.js"
     }
   },
-  "pre-commit": "lint:staged",
+  "pre-commit": [],
   "lint-staged": {
     "*.js": [
       "yarn run prettier",
