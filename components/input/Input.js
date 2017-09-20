@@ -37,6 +37,7 @@ const factory = (FontIcon) => {
       onFocus: PropTypes.func,
       onKeyPress: PropTypes.func,
       required: PropTypes.bool,
+      role: PropTypes.string,
       rows: PropTypes.number,
       theme: PropTypes.shape({
         bar: PropTypes.string,
@@ -67,6 +68,7 @@ const factory = (FontIcon) => {
       floating: true,
       multiline: false,
       required: false,
+      role: 'input',
       type: 'text',
     };
 
@@ -95,13 +97,13 @@ const factory = (FontIcon) => {
     }
 
     handleChange = (event) => {
-      const { onChange, multiline, maxLength } = this.props;
+      const { onChange, maxLength } = this.props;
       const valueFromEvent = event.target.value;
 
       // Trim value to maxLength if that exists (only on multiline inputs).
       // Note that this is still required even tho we have the onKeyPress filter
       // because the user could paste smt in the textarea.
-      const haveToTrim = (multiline && maxLength && event.target.value.length > maxLength);
+      const haveToTrim = (maxLength && event.target.value.length > maxLength);
       const value = haveToTrim ? valueFromEvent.substr(0, maxLength) : valueFromEvent;
 
       // propagate to to store and therefore to the input
@@ -130,8 +132,8 @@ const factory = (FontIcon) => {
     handleKeyPress = (event) => {
       // prevent insertion of more characters if we're a multiline input
       // and maxLength exists
-      const { multiline, maxLength, onKeyPress } = this.props;
-      if (multiline && maxLength) {
+      const { maxLength, onKeyPress } = this.props;
+      if (maxLength) {
         // check if smt is selected, in which case the newly added charcter would
         // replace the selected characters, so the length of value doesn't actually
         // increase.
@@ -166,7 +168,7 @@ const factory = (FontIcon) => {
 
     render() {
       const { children, defaultValue, disabled, error, floating, hint, icon,
-              name, label: labelText, maxLength, multiline, required,
+              name, label: labelText, maxLength, multiline, required, role,
               theme, type, value, onKeyPress, rows = 1, ...others } = this.props;
       const length = maxLength && value ? value.length : 0;
       const labelClassName = classnames(theme.label, { [theme.fixed]: !floating });
@@ -185,7 +187,7 @@ const factory = (FontIcon) => {
         className: classnames(theme.inputElement, { [theme.filled]: valuePresent }),
         onChange: this.handleChange,
         ref: (node) => { this.inputNode = node; },
-        role: 'input',
+        role,
         name,
         defaultValue,
         disabled,
